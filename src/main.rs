@@ -1,3 +1,6 @@
+//! Extract all Information from JDSave files and export it
+//!
+
 mod input;
 mod processing;
 
@@ -39,18 +42,11 @@ fn main() {
                 additional: vec![],
             };
 
-            processing::extract_video(&mut file_info);
-            processing::extract_aditional(&mut file_info);
+            processing::extract_additional(&mut file_info);
             processing::extract_images(&mut file_info);
+            processing::extract_video(&mut file_info);
 
-            for block in file_info.additional.iter(){
-                let utf =  String::from_utf8_lossy(block);
-                println!("found text: {}", utf);
-
-            }
-            println!("-----\nNew file");
-
-            // save_data(&dest, file_info);
+            save_data(&dest, file_info);
         }
     }
 }

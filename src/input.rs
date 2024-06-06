@@ -5,6 +5,7 @@ use std::process;
 use clap::Parser;
 use tempfile;
 
+/// Enum with all possible source types
 enum SourceType {
     FILE,
     FOLDER,
@@ -21,16 +22,18 @@ pub(crate) struct Cli {
 
     /// Username: only needed when ftp auth
     #[arg(short, long)]
-    pub(crate)user: Option<String>,
+    pub(crate) user: Option<String>,
 
     /// Password: only needed when ftp auth
     #[arg(short, long)]
-    pub(crate)password: Option<String>,
+    pub(crate) password: Option<String>,
 
     /// Destination: where files get written to
-    pub(crate)dest: path::PathBuf,
+    pub(crate) dest: path::PathBuf,
 }
 
+/// Match given path to source types.
+///
 fn match_src(pfad: &std::path::Path) -> SourceType {
     return if pfad.is_file() {
         SourceType::FILE
@@ -43,6 +46,12 @@ fn match_src(pfad: &std::path::Path) -> SourceType {
     };
 }
 
+/// Get all files from given source and copy into temporary dictionary
+///
+/// All files which match `JDSave_[0-9]+` are selected.
+/// These files get copied into a temporary directory.
+/// The function then return the path to temp directory.
+///
 pub fn get_files(pfad: std::path::PathBuf) -> tempfile::TempDir {
     let re = Regex::new(r"JDSave_[0-9]+").unwrap();
     let tmpdir = tempfile::tempdir().expect("Could not create tmp dir");

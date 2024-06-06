@@ -1,5 +1,6 @@
 use std::fs;
 
+/// Stores content of JDSave file and extracted information
 pub(crate) struct FileInfo {
     pub(crate) count: usize,
     pub(crate) data: Vec<u8>,
@@ -7,7 +8,11 @@ pub(crate) struct FileInfo {
     pub(crate) images: Vec<Vec<u8>>,
     pub(crate) additional: Vec<Vec<u8>>
 }
-pub(crate) fn extract_aditional(file_info: &mut FileInfo) {
+
+/// Extract additional information from JDSave file.
+/// Extracts everything not 0 von start to first JFIF header
+///
+pub(crate) fn extract_additional(file_info: &mut FileInfo) {
     let mut end: bool = true;
     let mut part: Vec<u8> = Vec::new();
 
@@ -32,38 +37,10 @@ pub(crate) fn extract_aditional(file_info: &mut FileInfo) {
     }
 }
 
-/*
-    // only for debug
 
-    let cubed_info:Vec<Vec<u8>> = try_extract(&buffer);
-
-
-    for cube in cubed_info.iter(){
-        let string = std::str::from_utf8(cube);
-        if let Ok(string) = string{
-            println!("{}", string);
-        }
-
-    }
-
-    let song_name = std::ffi::CStr::from_bytes_until_nul(&buffer[crate::BEGIN_NAME..])
-        .unwrap()
-        .to_str()
-        .expect("starting with \0 not possible so skipping");
-
-    file_info.song_name = song_name.parse()
-        .unwrap();
-
-
-
-    file_info.singer = std::ffi::CStr::from_bytes_until_nul(&buffer[crate::BEGIN_AUTHOR..])
-        .expect("starting with \0 not possible so skipping")
-        .to_str()
-        .unwrap()
-        .parse()
-        .unwrap();
-}
-*/
+/// Extract all images from JDSave file.
+/// Images are in JFIF format and get exported as output_NUMBER_SUBNUMBER.jfif
+///
 pub(crate) fn extract_images(file_info: &mut FileInfo) {
     let mut start_pos: usize = 0;
 
